@@ -1,4 +1,4 @@
 'extensions': [
     'gruntfile.js'
 ]
-'commands': 'cd $file_location && grunt'
+'commands': 'cd $file_path && grunt'
