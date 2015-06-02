@@ -1,0 +1,10 @@
+'extensions': [
+    '.ino'
+]
+'commands': 'arduino -build $file'
+'variants': [
+    {
+        'name': 'Upload'
+        'command': 'arduino -upload $file'
+    }
+]

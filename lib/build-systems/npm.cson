@@ -1,0 +1,4 @@
+'extensions': [
+    'package.json'
+]
+'commands': 'npm install'

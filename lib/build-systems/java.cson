@@ -1,0 +1,10 @@
+'extensions': [
+    '.java'
+]
+'commands': 'javac -cp . $file'
+'variants': [
+    {
+        'name': 'Run'
+        'command': 'java -cp . $file_base_name'
+    }
+]

@@ -1,0 +1,4 @@
+'extensions': [
+    'gulpfile.js'
+]
+'commands': 'cd $file_location && gulp'

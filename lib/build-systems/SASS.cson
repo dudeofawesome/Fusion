@@ -1,0 +1,5 @@
+'extensions': [
+    '.sass'
+    '.scss'
+]
+'commands': 'sass $file dist/$file_base_name.css'

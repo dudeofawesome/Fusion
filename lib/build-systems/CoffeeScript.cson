@@ -1,0 +1,5 @@
+'extensions': [
+    '.coffee'
+    '.litcoffee'
+]
+'commands': 'coffee --compile --output dist/$file_base_name $file'

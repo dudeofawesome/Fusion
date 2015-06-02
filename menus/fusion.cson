@@ -1,0 +1,81 @@
+# See https://atom.io/docs/latest/hacking-atom-package-word-count#menus for more details
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'Fusion'
+      'submenu': [
+        {
+          'label': 'Build System'
+          'submenu': [
+            {
+              'type': 'radio'
+              'label': 'Automatic'
+              'command': 'fusion:switch-build-system'
+            }
+            # {
+            #   'type': 'separator'
+            # }
+            {
+              'type': 'radio'
+              'label': 'Gulp'
+              'command': 'fusion:switch-build-system'
+            }
+            {
+              'type': 'radio'
+              'label': 'Node'
+              'command': 'fusion:switch-build-system'
+            }
+            {
+              'type': 'separator'
+            }
+            {
+              'label': 'New Build System'
+              'command': 'fusion:new-build-system'
+            }
+          ]
+        }
+        {
+          'label': 'Build'
+          'command': 'fusion:build'
+        }
+        {
+          'label': 'Run'
+          'command': 'fusion:run'
+        }
+        {
+          'label': 'Build With...'
+          'command': 'fusion:choose-build-system'
+        }
+        {
+          'label': 'Cancel Build'
+          'enabled': false
+          'command': 'fusion:cancel-build'
+        }
+        {
+          'label': 'Build Results'
+          'submenu': [
+            {
+              'label': 'Show Build Results'
+              'command': 'fusion:show-build-results'
+            }
+            {
+              'label': 'Next Result'
+              'command': 'fusion:show-next-build-result'
+            }
+            {
+              'label': 'Previous Result'
+              'command': 'fusion:show-previous-build-result'
+            }
+          ]
+        }
+        {
+          'type': 'checkbox'
+          'label': 'Save All on Build'
+          'checked': true
+          'command': 'fusion:save-all-on-build'
+        }
+      ]
+    ]
+  }
+]
