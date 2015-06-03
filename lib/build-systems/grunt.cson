@@ -1,4 +1,10 @@
-'extensions': [
+name: 'Grunt'
+extensions: [
     'gruntfile.js'
 ]
-'commands': 'cd $file_path && grunt'
+commandSequence: [
+    {
+        command: 'grunt'
+        arguments: []
+    }
+]

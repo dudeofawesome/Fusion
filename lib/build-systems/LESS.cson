@@ -1,4 +1,10 @@
-'extensions': [
+name: 'LESS'
+extensions: [
     '.less'
 ]
-'commands': 'less $file dist/$file_base_name.css'
+commandSequence: [
+    {
+        command: 'less'
+        arguments: ['{{file}}', 'dist/{{file_base_name}}.css',]
+    }
+]

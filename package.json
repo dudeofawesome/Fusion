@@ -10,16 +10,19 @@
   "keywords": [
     "fusion",
     "build",
-    "system"
+    "compile",
+    "system",
+    "make",
+    "process",
+    "gulp",
+    "grunt"
   ],
-  "activationCommands": {
-    "atom-workspace": "fusion:build"
-  },
-  "repository": "https://github.com/dudeofawesome/fusion",
+  "repository": "https://github.com/dudeofawesome/Fusion",
   "license": "GPL V2",
   "engines": {
     "atom": ">=0.174.0 <2.0.0"
   },
   "dependencies": {
+    "cson": "^3.0.1"
   }
 }

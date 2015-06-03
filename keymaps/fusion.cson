@@ -15,7 +15,7 @@
 '.platform-linux atom-workspace, .platform-win32 atom-workspace':
   'ctrl-alt-b': 'fusion:build'
   'ctrl-alt-shift-b': 'fusion:run'
-  'ctrl-c': 'fusion:cancel-build'
+  'ctrl-alt-c': 'fusion:cancel-build'
 
 '.build':
   'escape': 'fusion:cancel-build'

@@ -1,4 +1,10 @@
-'extensions': [
+name: 'NodeJS'
+extensions: [
     '.js'
 ]
-'commands': 'node $file'
+commandSequence: [
+    {
+        command: 'node'
+        arguments: ['{{file}}']
+    }
+]

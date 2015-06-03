@@ -1,4 +1,10 @@
-'extensions': [
+name: 'Gulp'
+extensions: [
     'gulpfile.js'
 ]
-'commands': 'cd $file_path && gulp'
+commandSequence: [
+    {
+        command: 'gulp'
+        arguments: []
+    }
+]

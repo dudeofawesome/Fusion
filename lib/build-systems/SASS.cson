@@ -1,5 +1,11 @@
-'extensions': [
+name: 'SASS'
+extensions: [
     '.sass'
     '.scss'
 ]
-'commands': 'sass $file dist/$file_base_name.css'
+commandSequence: [
+    {
+        command: 'sass'
+        arguments: ['{{file}}', 'dist/{{file_base_name}}.css',]
+    }
+]

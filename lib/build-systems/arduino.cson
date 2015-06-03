@@ -1,10 +1,21 @@
-'extensions': [
+name: 'Arduino'
+extensions: [
     '.ino'
 ]
-'commands': 'arduino -build $file'
-'variants': [
+commandSequence: [
     {
-        'name': 'Upload'
-        'command': 'arduino -upload $file'
+        command: 'arduino'
+        arguments: ['-build', '{{file}}']
+    }
+]
+variants: [
+    {
+        name: 'Upload'
+        commandSequence: [
+            {
+                command: 'arduino'
+                arguments: ['-upload', '{{file_base_name}}']
+            }
+        ]
     }
 ]

@@ -1,5 +1,11 @@
-'extensions': [
+name: 'CoffeeScript'
+extensions: [
     '.coffee'
     '.litcoffee'
 ]
-'commands': 'coffee --compile --output dist/$file_base_name $file'
+commandSequence: [
+    {
+        command: 'coffee'
+        arguments: ['--compile', '--output', 'dist/{{file_base_name}} {{file}}']
+    }
+]

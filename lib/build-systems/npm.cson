@@ -1,4 +1,10 @@
-'extensions': [
+name: 'NPM'
+extensions: [
     'package.json'
 ]
-'commands': 'npm install'
+commandSequence: [
+    {
+        command: 'npm'
+        arguments: ['install']
+    }
+]
