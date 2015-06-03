@@ -1,0 +1,10 @@
+name: 'Python'
+extensions: [
+    '.py'
+]
+commandSequence: [
+    {
+        command: 'python'
+        arguments: ['{{file}}']
+    }
+]
