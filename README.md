@@ -1,4 +1,4 @@
-# fusion package
+# Fusion: The Atom Builder
 
 A short description of your package.
 
