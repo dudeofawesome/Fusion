@@ -28,10 +28,8 @@ module.exports = Fusion =
         @fusionView = new FusionView(state.fusionViewState)
         @modalPanel = atom.workspace.addModalPanel(item: @fusionView.getElement(), visible: false)
 
-        # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
         @subscriptions = new CompositeDisposable
 
-        # Register command that toggles this view
         @subscriptions.add atom.commands.add 'atom-workspace', 'fusion:build': => @build()
         @subscriptions.add atom.commands.add 'atom-workspace', 'fusion:run': => @run()
         @subscriptions.add atom.commands.add 'atom-workspace', 'fusion:switch-build-system-auto': => @switchBuildSystemAuto()
@@ -50,7 +48,8 @@ module.exports = Fusion =
             if buildSystems[i].name is atom.config.get('fusion.selectedBuildSystem')
                 currentBuildSystem = buildSystems[i]
 
-        # TODO set save all on build menu option to current state
+        Fusion.menu.saveAllOnBuild.checked = atom.config.get('fusion.saveAllOnBuild')
+        atom.menu.update()
 
     deactivate: ->
         @modalPanel.destroy()
@@ -61,6 +60,10 @@ module.exports = Fusion =
         fusionViewState: @fusionView.serialize()
 
     build: ->
+        if currentBuild?
+            atom.notifications.addWarning('Build already in progress', {detail: 'Abort the previous build to continue'})
+            return
+
         editor = atom.workspace.getActiveTextEditor()
         file = editor.getTitle()
         fileSplit = file.split('.')
@@ -86,10 +89,13 @@ module.exports = Fusion =
             filledArgs[i] = filledArgs[i].replace('{{file_path}}', filePath);
 
         Fusion.menu.cancel.enabled = true
+        atom.menu.update()
 
         currentBuild = child_process.spawn currentBuildSystem.commandSequence[0].command, filledArgs, {cwd: filePath}
         currentBuild.on 'close', (code) ->
             Fusion.menu.cancel.enabled = false
+            atom.menu.update()
+            currentBuild = null
             atom.notifications.addSuccess('Build Finished', {detail: 'Finished with code ' + code})
         currentBuild.stdout.on 'data', (buffer) ->
             # TODO display build log
@@ -101,6 +107,7 @@ module.exports = Fusion =
     run: ->
         # TODO add run option
         Fusion.menu.cancel.enabled = true
+        atom.menu.update()
 
     switchBuildSystemAuto: ->
         atom.config.set('fusion.selectedBuildSystem', 'Automatic')
@@ -121,6 +128,7 @@ module.exports = Fusion =
         if currentBuild
             currentBuild.kill()
             Fusion.menu.cancel.enabled = false
+            atom.menu.update()
             atom.notifications.addInfo('Build Cancelled')
 
     showBuildResults: ->
@@ -139,8 +147,9 @@ module.exports = Fusion =
             editor.insertText('Showing previous build result...')
 
     saveAllOnBuild: ->
-        # toggle fusion.save-all-on-build
         atom.config.set('fusion.saveAllOnBuild', !atom.config.get('fusion.saveAllOnBuild'))
+        Fusion.menu.saveAllOnBuild.checked = atom.config.get('fusion.saveAllOnBuild')
+        atom.menu.update()
 
     getFusionMenu: ->
         for i of atom.menu.template

@@ -1,0 +1,9 @@
+name: 'Sleep (test)'
+extensions: [
+]
+commandSequence: [
+    {
+        command: 'sleep'
+        arguments: ['10']
+    }
+]
