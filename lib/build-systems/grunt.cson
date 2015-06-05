@@ -1,6 +1,7 @@
 name: 'Grunt'
 extensions: [
-    'gruntfile.js'
+    'gruntfile.js',
+    'gruntfile.coffee'
 ]
 commandSequence: [
     {

@@ -1,0 +1,10 @@
+name: 'LaTeX'
+extensions: [
+    '.tex'
+]
+commandSequence: [
+    {
+        command: 'pdflatex'
+        arguments: ['{{file}}']
+    }
+]
