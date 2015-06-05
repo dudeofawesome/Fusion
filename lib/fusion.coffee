@@ -70,6 +70,8 @@ module.exports = Fusion =
         fileBaseName = fileSplit[0]
         fileType = fileSplit[fileSplit.length - 1];
         filePath = editor.getPath().split(file)[0]
+        tmp = atom.project.getPaths()[0].split('/')
+        projectName = tmp[tmp.length - 1]
 
         if atom.config.get('fusion.selectedBuildSystem') is 'Automatic'
             for i of buildSystems
@@ -77,16 +79,17 @@ module.exports = Fusion =
                     if buildSystems[i].extensions[j].includes(fileType)
                         currentBuildSystem = buildSystems[i]
 
-        atom.notifications.addInfo('Building...', {detail: 'using ' + currentBuildSystem.name + ' build system' + if atom.config.get('fusion.selectedBuildSystem') is 'Automatic' then ' (Auto)' else ''})
+        atom.notifications.addInfo('Building...', {detail: 'using ' + currentBuildSystem.name + ' build system' + if atom.config.get('fusion.selectedBuildSystem') is 'Automatic' then ' (Auto)'})
 
-        atom.workspaceView.trigger('window:save-all') if atom.config.get('fusion.saveAllOnBuild') is true
+        atom.commands.dispatch(atom.views.getView(atom.workspace), 'window:save-all') if atom.config.get('fusion.saveAllOnBuild') is true
 
         filledArgs = currentBuildSystem.commandSequence[0].arguments.slice(0)
         for i of filledArgs
-            filledArgs[i] = filledArgs[i].replace('{{file}}', file);
-            filledArgs[i] = filledArgs[i].replace('{{file_base_name}}', fileBaseName);
-            filledArgs[i] = filledArgs[i].replace('{{file_type}}', fileType);
-            filledArgs[i] = filledArgs[i].replace('{{file_path}}', filePath);
+            filledArgs[i] = filledArgs[i].replaceAll '{{file}}', file
+            filledArgs[i] = filledArgs[i].replaceAll '{{file_base_name}}', fileBaseName
+            filledArgs[i] = filledArgs[i].replaceAll '{{file_type}}', fileType
+            filledArgs[i] = filledArgs[i].replaceAll '{{file_path}}', filePath
+            filledArgs[i] = filledArgs[i].replaceAll '{{project_name}}', projectName
 
         Fusion.menu.cancel.enabled = true
         atom.menu.update()
@@ -105,24 +108,62 @@ module.exports = Fusion =
             atom.notifications.addError('Build Result', {detail: buffer})
 
     run: ->
-        # TODO add run option
-        Fusion.menu.cancel.enabled = true
-        atom.menu.update()
+        if currentBuild?
+            atom.notifications.addWarning('Build already in progress', {detail: 'Abort the previous build to continue'})
+            return
+
+        editor = atom.workspace.getActiveTextEditor()
+        file = editor.getTitle()
+        fileSplit = file.split('.')
+        fileBaseName = fileSplit[0]
+        fileType = fileSplit[fileSplit.length - 1];
+        filePath = editor.getPath().split(file)[0]
+        tmp = atom.project.getPaths()[0].split('/')
+        projectName = tmp[tmp.length - 1]
+
+        if atom.config.get('fusion.selectedBuildSystem') is 'Automatic'
+            for i of buildSystems
+                for j of buildSystems[i].extensions
+                    if buildSystems[i].extensions[j].includes(fileType)
+                        currentBuildSystem = buildSystems[i]
+
+        if currentBuildSystem.variants and currentBuildSystem.variants.run?
+            atom.notifications.addInfo('Running...', {detail: 'using ' + currentBuildSystem.name + ' build system' + if atom.config.get('fusion.selectedBuildSystem') is 'Automatic' then ' (Auto)'})
+
+            filledArgs = currentBuildSystem.variants.run.commandSequence[0].arguments.slice(0)
+            for i of filledArgs
+                filledArgs[i] = filledArgs[i].replaceAll '{{file}}', file
+                filledArgs[i] = filledArgs[i].replaceAll '{{file_base_name}}', fileBaseName
+                filledArgs[i] = filledArgs[i].replaceAll '{{file_type}}', fileType
+                filledArgs[i] = filledArgs[i].replaceAll '{{file_path}}', filePath
+                filledArgs[i] = filledArgs[i].replaceAll '{{project_name}}', projectName
+
+            Fusion.menu.cancel.enabled = true
+            atom.menu.update()
+
+            currentBuild = child_process.spawn currentBuildSystem.variants.run.commandSequence[0].command, filledArgs, {cwd: filePath}
+            currentBuild.on 'close', (code) ->
+                Fusion.menu.cancel.enabled = false
+                atom.menu.update()
+                currentBuild = null
+                atom.notifications.addSuccess('Run Finished', {detail: 'Finished with code ' + code})
+            currentBuild.stdout.on 'data', (buffer) ->
+                # TODO display run log
+                console.log(buffer.toString())
+            currentBuild.stderr.on 'data', (buffer) ->
+                console.log(buffer.toString())
+                atom.notifications.addError('Run Result', {detail: buffer})
 
     switchBuildSystemAuto: ->
         atom.config.set('fusion.selectedBuildSystem', 'Automatic')
         atom.notifications.addInfo('Switching build system', {detail: 'Switched to Auto'})
 
     newBuildSystem: ->
-        editor = atom.workspace.getActiveTextEditor()
-        if (editor)
-            editor.insertText('New build system...')
+        atom.notifications.addInfo('New Build System', {detail: 'this doesn\' work yet'})
 
     chooseBuildSystem: ->
-        editor = atom.workspace.getActiveTextEditor()
-        if (editor)
-            editor.insertText('Choosing build system...')
-        this.getInstalledBuildSystems()
+        atom.notifications.addInfo('Choose Build System', {detail: 'this doesn\' work yet'})
+        this.updateListOfBuildSystems()
 
     cancelBuild: ->
         if currentBuild
@@ -132,19 +173,13 @@ module.exports = Fusion =
             atom.notifications.addInfo('Build Cancelled')
 
     showBuildResults: ->
-        editor = atom.workspace.getActiveTextEditor()
-        if (editor)
-            editor.insertText('Showing build results...')
+        atom.notifications.addInfo('Showing build results', {detail: 'this doesn\' work yet'})
 
     showNextBuildResult: ->
-        editor = atom.workspace.getActiveTextEditor()
-        if (editor)
-            editor.insertText('Showing next build result...')
+        atom.notifications.addInfo('Showing next build result', {detail: 'this doesn\' work yet'})
 
     showPreviousBuildResult: ->
-        editor = atom.workspace.getActiveTextEditor()
-        if (editor)
-            editor.insertText('Showing previous build result...')
+        atom.notifications.addInfo('Showing previous build result', {detail: 'this doesn\' work yet'})
 
     saveAllOnBuild: ->
         atom.config.set('fusion.saveAllOnBuild', !atom.config.get('fusion.saveAllOnBuild'))
@@ -204,3 +239,6 @@ module.exports = Fusion =
 
             Fusion.menu.buildSystems.submenu.splice(Fusion.menu.buildSystems.submenu.length - 2, 0, {type: 'radio', label: buildSystems[i].name, command: 'fusion:switch-build-system-' + buildSystems[i].name, checked: (if atom.config.get('fusion.selectedBuildSystem') is buildSystems[i].name then true else false)})
         atom.menu.update()
+
+String.prototype.replaceAll = (find, replace) ->
+  return this.replace(new RegExp(find, 'g'), replace)

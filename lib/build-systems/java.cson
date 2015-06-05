@@ -8,9 +8,8 @@ commandSequence: [
         arguments: ['-cp', '.', '{{file}}']
     }
 ]
-variants: [
-    {
-        name: 'Run'
+variants: {
+    run: {
         commandSequence: [
             {
                 command: 'java'
@@ -18,4 +17,12 @@ variants: [
             }
         ]
     }
-]
+    package: {
+        commandSequence: [
+            {
+                command: 'jar'
+                arguments: ['-cvfm', '{{project_name}}.jar', '*.mf *.class */*.* *.txt']
+            }
+        ]
+    }
+}

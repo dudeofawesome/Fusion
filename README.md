@@ -2,6 +2,7 @@
 
 TODO: Add a description of how to make new build systems
 You'll need to start you're package name with 'fusion-build-'
+[A demo build system extension is available here.](https://github.com/dudeofawesome/fusion-build-demo-system)
 
 A short description of your package.
 
