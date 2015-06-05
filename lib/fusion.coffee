@@ -166,17 +166,28 @@ module.exports = Fusion =
                         Fusion.menu.saveAllOnBuild = atom.menu.template[i].submenu[j].submenu[6]
 
     getInstalledBuildSystems: ->
-        # TODO get extended build systems
+        defaultBuildSystems = []
+        defaultBuildSystemsPath = atom.packages.resolvePackagePath('Fusion') + '/lib/build-systems/'
+        defaultBuildSystemsNames = FS.readdirSync(defaultBuildSystemsPath)
+        for i of defaultBuildSystemsNames
+            defaultBuildSystems.push CSON.parse FS.readFileSync(defaultBuildSystemsPath + defaultBuildSystemsNames[i]).toString()
+
         installedBuildSystems = []
-        installedBuildSystemsPath = atom.packages.resolvePackagePath('Fusion') + '/lib/build-systems/'
-        installedBuildSystemsNames = FS.readdirSync(installedBuildSystemsPath)
-        for i of installedBuildSystemsNames
-            # console.log i + ":" + installedBuildSystemsNames[i]
-            installedBuildSystems.push CSON.parse FS.readFileSync(installedBuildSystemsPath + installedBuildSystemsNames[i]).toString()
+        installedPackages = atom.packages.getLoadedPackages()
+        installedBuildSystemsPaths = []
+        for i of installedPackages
+            if installedPackages[i].name.startsWith 'fusion-build-'
+                console.log 'Adding' + installedPackages[i].name + ' to active build systems'
+                installedBuildSystemsPaths.push installedPackages[i].path
+        for i of installedBuildSystemsPaths
+            console.log i + ":" + installedBuildSystemsPaths[i]
+            installedBuildSystems.push CSON.parse FS.readFileSync(installedBuildSystemsPaths[i] + '/lib/fusion-build.cson').toString()
 
-        # console.log(installedBuildSystems);
+        allBuildSystems = defaultBuildSystems.concat(installedBuildSystems)
+        # TODO sort allBuildSystems alphabetically
+        console.log allBuildSystems
 
-        return installedBuildSystems
+        return allBuildSystems
 
     updateListOfBuildSystems: ->
         buildSystems = this.getInstalledBuildSystems()
