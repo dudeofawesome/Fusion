@@ -1,0 +1,10 @@
+name: 'APM'
+extensions: [
+    'package.json'
+]
+commandSequence: [
+    {
+        command: 'apm'
+        arguments: ['install']
+    }
+]

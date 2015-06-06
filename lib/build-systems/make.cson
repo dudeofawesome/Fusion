@@ -1,0 +1,10 @@
+name: 'GNU Make'
+extensions: [
+    'makefile'
+]
+commandSequence: [
+    {
+        command: 'make'
+        arguments: []
+    }
+]

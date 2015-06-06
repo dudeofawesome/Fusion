@@ -1,0 +1,21 @@
+name: 'C'
+extensions: [
+    '.c',
+    '.h'
+]
+commandSequence: [
+    {
+        command: 'gcc'
+        arguments: ['{{file}}']
+    }
+]
+variants: {
+    run: {
+        commandSequence: [
+            {
+                command: './{{file_base_name}}'
+                arguments: []
+            }
+        ]
+    }
+}

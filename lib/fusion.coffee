@@ -32,6 +32,7 @@ module.exports = Fusion =
 
         @subscriptions.add atom.commands.add 'atom-workspace', 'fusion:build': => @build()
         @subscriptions.add atom.commands.add 'atom-workspace', 'fusion:run': => @run()
+        @subscriptions.add atom.commands.add 'atom-workspace', 'fusion:package': => @package()
         @subscriptions.add atom.commands.add 'atom-workspace', 'fusion:switch-build-system-auto': => @switchBuildSystemAuto()
         @subscriptions.add atom.commands.add 'atom-workspace', 'fusion:new-build-system': => @newBuildSystem()
         @subscriptions.add atom.commands.add 'atom-workspace', 'fusion:choose-build-system': => @chooseBuildSystem()
@@ -59,6 +60,7 @@ module.exports = Fusion =
     serialize: ->
         fusionViewState: @fusionView.serialize()
 
+    # TODO add a way to further specify what a file needs to contain for a build system to handle it.
     build: ->
         if currentBuild?
             atom.notifications.addWarning('Build already in progress', {detail: 'Abort the previous build to continue'})
@@ -153,6 +155,53 @@ module.exports = Fusion =
             currentBuild.stderr.on 'data', (buffer) ->
                 console.log(buffer.toString())
                 atom.notifications.addError('Run Result', {detail: buffer})
+
+    package: ->
+        if currentBuild?
+            atom.notifications.addWarning('Build already in progress', {detail: 'Abort the previous build to continue'})
+            return
+
+        editor = atom.workspace.getActiveTextEditor()
+        file = editor.getTitle()
+        fileSplit = file.split('.')
+        fileBaseName = fileSplit[0]
+        fileType = fileSplit[fileSplit.length - 1];
+        filePath = editor.getPath().split(file)[0]
+        tmp = atom.project.getPaths()[0].split('/')
+        projectName = tmp[tmp.length - 1]
+
+        if atom.config.get('fusion.selectedBuildSystem') is 'Automatic'
+            for i of buildSystems
+                for j of buildSystems[i].extensions
+                    if buildSystems[i].extensions[j].includes(fileType)
+                        currentBuildSystem = buildSystems[i]
+
+        if currentBuildSystem.variants and currentBuildSystem.variants.package?
+            atom.notifications.addInfo('Packaging...', {detail: 'using ' + currentBuildSystem.name + ' build system' + if atom.config.get('fusion.selectedBuildSystem') is 'Automatic' then ' (Auto)'})
+
+            filledArgs = currentBuildSystem.variants.package.commandSequence[0].arguments.slice(0)
+            for i of filledArgs
+                filledArgs[i] = filledArgs[i].replaceAll '{{file}}', file
+                filledArgs[i] = filledArgs[i].replaceAll '{{file_base_name}}', fileBaseName
+                filledArgs[i] = filledArgs[i].replaceAll '{{file_type}}', fileType
+                filledArgs[i] = filledArgs[i].replaceAll '{{file_path}}', filePath
+                filledArgs[i] = filledArgs[i].replaceAll '{{project_name}}', projectName
+
+            Fusion.menu.cancel.enabled = true
+            atom.menu.update()
+
+            currentBuild = child_process.spawn currentBuildSystem.variants.package.commandSequence[0].command, filledArgs, {cwd: filePath}
+            currentBuild.on 'close', (code) ->
+                Fusion.menu.cancel.enabled = false
+                atom.menu.update()
+                currentBuild = null
+                atom.notifications.addSuccess('Packaging Finished', {detail: 'Finished with code ' + code})
+            currentBuild.stdout.on 'data', (buffer) ->
+                # TODO display package log
+                console.log(buffer.toString())
+            currentBuild.stderr.on 'data', (buffer) ->
+                console.log(buffer.toString())
+                atom.notifications.addError('Packaging Result', {detail: buffer})
 
     switchBuildSystemAuto: ->
         atom.config.set('fusion.selectedBuildSystem', 'Automatic')
