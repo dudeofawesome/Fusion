@@ -1,0 +1,11 @@
+name: 'Bash'
+extensions: [
+    '.sh',
+    '.command'
+]
+commandSequence: [
+    {
+        command: './$file'
+        arguments: []
+    }
+]

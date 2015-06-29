@@ -1,0 +1,10 @@
+name: 'Ruby'
+extensions: [
+    '.rb'
+]
+commandSequence: [
+    {
+        command: 'ruby'
+        arguments: ['$file']
+    }
+]

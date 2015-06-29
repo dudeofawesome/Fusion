@@ -38,6 +38,13 @@ menu: [
           command: 'fusion:package'
         }
         {
+          label: 'Other Variants'
+          enabled: false
+          submentu: [
+
+          ]
+        }
+        {
           label: 'Build With...'
           command: 'fusion:choose-build-system'
         }

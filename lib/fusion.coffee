@@ -26,7 +26,8 @@ module.exports = Fusion =
 
     activate: (state) ->
         @fusionView = new FusionView(state.fusionViewState)
-        @modalPanel = atom.workspace.addModalPanel(item: @fusionView.getElement(), visible: false)
+        # TODO get the panel working for showing build results
+        # @modalPanel = atom.workspace.addBottomPanel (item: @fusionView.getElement(), visible: true)
 
         @subscriptions = new CompositeDisposable
 
@@ -75,7 +76,7 @@ module.exports = Fusion =
         tmp = atom.project.getPaths()[0].split('/')
         projectName = tmp[tmp.length - 1]
 
-        if atom.config.get('fusion.selectedBuildSystem') is 'Automatic'
+        if atom.config.get('fusion.selectedBuildSystem') is 'Automatic' or atom.config.get('fusion.selectedBuildSystem') is null
             for i of buildSystems
                 for j of buildSystems[i].extensions
                     if buildSystems[i].extensions[j].includes(fileType)
@@ -206,6 +207,12 @@ module.exports = Fusion =
     switchBuildSystemAuto: ->
         atom.config.set('fusion.selectedBuildSystem', 'Automatic')
         atom.notifications.addInfo('Switching build system', {detail: 'Switched to Auto'})
+        Fusion.menu.build.enabled = true
+        Fusion.menu.run.enabled = true
+        Fusion.menu.package.enabled = true
+        Fusion.menu.otherVariants.enabled = true
+        Fusion.menu.otherVariants.submenu = []
+        atom.menu.update()
 
     newBuildSystem: ->
         atom.notifications.addInfo('New Build System', {detail: 'this doesn\' work yet'})
@@ -244,10 +251,12 @@ module.exports = Fusion =
                         Fusion.menu.buildSystems = atom.menu.template[i].submenu[j].submenu[0]
                         Fusion.menu.build = atom.menu.template[i].submenu[j].submenu[1]
                         Fusion.menu.run = atom.menu.template[i].submenu[j].submenu[2]
-                        Fusion.menu.buildWith = atom.menu.template[i].submenu[j].submenu[3]
-                        Fusion.menu.cancel = atom.menu.template[i].submenu[j].submenu[4]
-                        Fusion.menu.buildResults = atom.menu.template[i].submenu[j].submenu[5]
-                        Fusion.menu.saveAllOnBuild = atom.menu.template[i].submenu[j].submenu[6]
+                        Fusion.menu.package = atom.menu.template[i].submenu[j].submenu[3]
+                        Fusion.menu.otherVariants = atom.menu.template[i].submenu[j].submenu[4]
+                        Fusion.menu.buildWith = atom.menu.template[i].submenu[j].submenu[5]
+                        Fusion.menu.cancel = atom.menu.template[i].submenu[j].submenu[6]
+                        Fusion.menu.buildResults = atom.menu.template[i].submenu[j].submenu[7]
+                        Fusion.menu.saveAllOnBuild = atom.menu.template[i].submenu[j].submenu[8]
 
     getInstalledBuildSystems: ->
         defaultBuildSystems = []
@@ -282,6 +291,18 @@ module.exports = Fusion =
                     currentBuildSystem = bs
                     atom.config.set('fusion.selectedBuildSystem', bs.name)
                     atom.notifications.addInfo('Switching build system', {detail: 'Switched to ' + bs.name})
+                    Fusion.menu.build.enabled = if bs.commandSequence? then true else false
+                    Fusion.menu.run.enabled = if bs.variants? and bs.variants.run? then true else false
+                    Fusion.menu.package.enabled = if bs.variants? and bs.variants.package? then true else false
+                    Fusion.menu.otherVariants.submenu = []
+                    if bs.variants? and bs.variants.other? and bs.variants.other.length > 0
+                        Fusion.menu.otherVariants.enabled = true
+                        for i of bs.variants.other
+                            # TODO add command to be able to run other build variants
+                            Fusion.menu.otherVariants.submenu.push {label: bs.variants.other[i].name, command: ''}
+                    else
+                        Fusion.menu.otherVariants.enabled = false
+                    atom.menu.update()
                 )
             )(buildSystems[i])
             @subscriptions.add atom.commands.add 'atom-workspace', 'fusion:switch-build-system-' + buildSystems[i].name, switchBuildSystemFuncs[buildSystems[i].name]

@@ -4,7 +4,7 @@ extensions: [
 ]
 commandSequence: [
     {
-        command: 'less'
+        command: 'lessc'
         arguments: ['{{file}}', 'dist/{{file_base_name}}.css',]
     }
 ]

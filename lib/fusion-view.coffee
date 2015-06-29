@@ -1,3 +1,5 @@
+
+
 module.exports =
 class FusionView
   constructor: (serializedState) ->
