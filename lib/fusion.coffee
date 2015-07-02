@@ -244,9 +244,9 @@ module.exports = Fusion =
 
     getFusionMenu: ->
         for i of atom.menu.template
-            if atom.menu.template[i].label is "Packages"
+            if atom.menu.template[i].label.replace('&', '') is "Packages"
                 for j of atom.menu.template[i].submenu
-                    if atom.menu.template[i].submenu[j].label is "Fusion"
+                    if atom.menu.template[i].submenu[j].label.replace('&', '') is "Fusion"
                         Fusion.menu.parent = atom.menu.template[i].submenu[j]
                         Fusion.menu.buildSystems = atom.menu.template[i].submenu[j].submenu[0]
                         Fusion.menu.build = atom.menu.template[i].submenu[j].submenu[1]

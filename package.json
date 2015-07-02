@@ -1,11 +1,11 @@
 {
   "name": "Fusion",
   "main": "./lib/fusion",
-  "version": "0.0.111",
+  "version": "0.0.112",
   "description": "An Atom builder that allows for easy extension",
   "author": {
     "name": "Louis Orleans",
-    "email": "louis@0rleans.com"
+    "email": "louis@orleans.io"
   },
   "keywords": [
     "fusion",
