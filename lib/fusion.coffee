@@ -86,6 +86,13 @@ module.exports = Fusion =
 
         atom.commands.dispatch(atom.views.getView(atom.workspace), 'window:save-all') if atom.config.get('fusion.saveAllOnBuild') is true
 
+        filledCommand = currentBuildSystem.commandSequence[0].command + '';
+        filledCommand = filledCommand.replaceAll '{{file}}', file
+        filledCommand = filledCommand.replaceAll '{{file_base_name}}', fileBaseName
+        filledCommand = filledCommand.replaceAll '{{file_type}}', fileType
+        filledCommand = filledCommand.replaceAll '{{file_path}}', filePath
+        filledCommand = filledCommand.replaceAll '{{project_name}}', projectName
+
         filledArgs = currentBuildSystem.commandSequence[0].arguments.slice(0)
         for i of filledArgs
             filledArgs[i] = filledArgs[i].replaceAll '{{file}}', file
@@ -97,7 +104,7 @@ module.exports = Fusion =
         Fusion.menu.cancel.enabled = true
         atom.menu.update()
 
-        currentBuild = child_process.spawn currentBuildSystem.commandSequence[0].command, filledArgs, {cwd: filePath}
+        currentBuild = child_process.spawn filledCommand, filledArgs, {cwd: filePath}
         currentBuild.on 'close', (code) ->
             Fusion.menu.cancel.enabled = false
             atom.menu.update()
@@ -133,6 +140,13 @@ module.exports = Fusion =
         if currentBuildSystem.variants and currentBuildSystem.variants.run?
             atom.notifications.addInfo('Running...', {detail: 'using ' + currentBuildSystem.name + ' build system' + if atom.config.get('fusion.selectedBuildSystem') is 'Automatic' then ' (Auto)'})
 
+            filledCommand = currentBuildSystem.variants.run.commandSequence[0].command + '';
+            filledCommand = filledCommand.replaceAll '{{file}}', file
+            filledCommand = filledCommand.replaceAll '{{file_base_name}}', fileBaseName
+            filledCommand = filledCommand.replaceAll '{{file_type}}', fileType
+            filledCommand = filledCommand.replaceAll '{{file_path}}', filePath
+            filledCommand = filledCommand.replaceAll '{{project_name}}', projectName
+
             filledArgs = currentBuildSystem.variants.run.commandSequence[0].arguments.slice(0)
             for i of filledArgs
                 filledArgs[i] = filledArgs[i].replaceAll '{{file}}', file
@@ -144,7 +158,7 @@ module.exports = Fusion =
             Fusion.menu.cancel.enabled = true
             atom.menu.update()
 
-            currentBuild = child_process.spawn currentBuildSystem.variants.run.commandSequence[0].command, filledArgs, {cwd: filePath}
+            currentBuild = child_process.spawn filledCommand, filledArgs, {cwd: filePath}
             currentBuild.on 'close', (code) ->
                 Fusion.menu.cancel.enabled = false
                 atom.menu.update()
@@ -180,6 +194,13 @@ module.exports = Fusion =
         if currentBuildSystem.variants and currentBuildSystem.variants.package?
             atom.notifications.addInfo('Packaging...', {detail: 'using ' + currentBuildSystem.name + ' build system' + if atom.config.get('fusion.selectedBuildSystem') is 'Automatic' then ' (Auto)'})
 
+            filledCommand = currentBuildSystem.variants.package.commandSequence[0].command + '';
+            filledCommand = filledCommand.replaceAll '{{file}}', file
+            filledCommand = filledCommand.replaceAll '{{file_base_name}}', fileBaseName
+            filledCommand = filledCommand.replaceAll '{{file_type}}', fileType
+            filledCommand = filledCommand.replaceAll '{{file_path}}', filePath
+            filledCommand = filledCommand.replaceAll '{{project_name}}', projectName
+
             filledArgs = currentBuildSystem.variants.package.commandSequence[0].arguments.slice(0)
             for i of filledArgs
                 filledArgs[i] = filledArgs[i].replaceAll '{{file}}', file
@@ -191,7 +212,7 @@ module.exports = Fusion =
             Fusion.menu.cancel.enabled = true
             atom.menu.update()
 
-            currentBuild = child_process.spawn currentBuildSystem.variants.package.commandSequence[0].command, filledArgs, {cwd: filePath}
+            currentBuild = child_process.spawn filledCommand, filledArgs, {cwd: filePath}
             currentBuild.on 'close', (code) ->
                 Fusion.menu.cancel.enabled = false
                 atom.menu.update()

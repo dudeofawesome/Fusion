@@ -5,8 +5,8 @@ extensions: [
 ]
 commandSequence: [
     {
-        command: 'gcc'
-        arguments: ['{{file}}']
+        command: 'g++'
+        arguments: ['{{file}}', '-o', '{{file_base_name}}']
     }
 ]
 variants: {
