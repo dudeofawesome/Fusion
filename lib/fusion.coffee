@@ -75,6 +75,11 @@ module.exports = Fusion =
         filePath = editor.getPath().split(file)[0]
         tmp = atom.project.getPaths()[0].split('/')
         projectName = tmp[tmp.length - 1]
+        classpath = '.'
+        wd = FS.readdirSync(filePath)
+        for i of wd
+            if wd[i] is '.classpath'
+                classpath = FS.readFileSync(filePath + '/' + wd[i]).toString()
 
         if atom.config.get('fusion.selectedBuildSystem') is 'Automatic' or atom.config.get('fusion.selectedBuildSystem') is null
             for i of buildSystems
@@ -92,6 +97,7 @@ module.exports = Fusion =
         filledCommand = filledCommand.replaceAll '{{file_type}}', fileType
         filledCommand = filledCommand.replaceAll '{{file_path}}', filePath
         filledCommand = filledCommand.replaceAll '{{project_name}}', projectName
+        filledCommand = filledCommand.replaceAll '{{classpath}}', classpath
 
         filledArgs = currentBuildSystem.commandSequence[0].arguments.slice(0)
         for i of filledArgs
@@ -100,6 +106,7 @@ module.exports = Fusion =
             filledArgs[i] = filledArgs[i].replaceAll '{{file_type}}', fileType
             filledArgs[i] = filledArgs[i].replaceAll '{{file_path}}', filePath
             filledArgs[i] = filledArgs[i].replaceAll '{{project_name}}', projectName
+            filledArgs[i] = filledArgs[i].replaceAll '{{classpath}}', classpath
 
         Fusion.menu.cancel.enabled = true
         atom.menu.update()
@@ -130,6 +137,11 @@ module.exports = Fusion =
         filePath = editor.getPath().split(file)[0]
         tmp = atom.project.getPaths()[0].split('/')
         projectName = tmp[tmp.length - 1]
+        classpath = '.'
+        wd = FS.readdirSync(filePath)
+        for i of wd
+            if wd[i] is '.classpath'
+                classpath = FS.readFileSync(filePath + '/' + wd[i]).toString()
 
         if atom.config.get('fusion.selectedBuildSystem') is 'Automatic'
             for i of buildSystems
@@ -146,6 +158,7 @@ module.exports = Fusion =
             filledCommand = filledCommand.replaceAll '{{file_type}}', fileType
             filledCommand = filledCommand.replaceAll '{{file_path}}', filePath
             filledCommand = filledCommand.replaceAll '{{project_name}}', projectName
+            filledCommand = filledCommand.replaceAll '{{classpath}}', classpath
 
             filledArgs = currentBuildSystem.variants.run.commandSequence[0].arguments.slice(0)
             for i of filledArgs
@@ -154,6 +167,7 @@ module.exports = Fusion =
                 filledArgs[i] = filledArgs[i].replaceAll '{{file_type}}', fileType
                 filledArgs[i] = filledArgs[i].replaceAll '{{file_path}}', filePath
                 filledArgs[i] = filledArgs[i].replaceAll '{{project_name}}', projectName
+                filledArgs[i] = filledArgs[i].replaceAll '{{classpath}}', classpath
 
             Fusion.menu.cancel.enabled = true
             atom.menu.update()
@@ -184,6 +198,11 @@ module.exports = Fusion =
         filePath = editor.getPath().split(file)[0]
         tmp = atom.project.getPaths()[0].split('/')
         projectName = tmp[tmp.length - 1]
+        classpath = '.'
+        wd = FS.readdirSync(filePath)
+        for i of wd
+            if wd[i] is '.classpath'
+                classpath = FS.readFileSync(filePath + '/' + wd[i]).toString()
 
         if atom.config.get('fusion.selectedBuildSystem') is 'Automatic'
             for i of buildSystems
@@ -200,6 +219,7 @@ module.exports = Fusion =
             filledCommand = filledCommand.replaceAll '{{file_type}}', fileType
             filledCommand = filledCommand.replaceAll '{{file_path}}', filePath
             filledCommand = filledCommand.replaceAll '{{project_name}}', projectName
+            filledCommand = filledCommand.replaceAll '{{classpath}}', classpath
 
             filledArgs = currentBuildSystem.variants.package.commandSequence[0].arguments.slice(0)
             for i of filledArgs
@@ -208,6 +228,7 @@ module.exports = Fusion =
                 filledArgs[i] = filledArgs[i].replaceAll '{{file_type}}', fileType
                 filledArgs[i] = filledArgs[i].replaceAll '{{file_path}}', filePath
                 filledArgs[i] = filledArgs[i].replaceAll '{{project_name}}', projectName
+                filledArgs[i] = filledArgs[i].replaceAll '{{classpath}}', classpath
 
             Fusion.menu.cancel.enabled = true
             atom.menu.update()
