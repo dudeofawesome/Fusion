@@ -5,6 +5,6 @@ extensions: [
 commandSequence: [
     {
         command: 'processing-java'
-        arguments: ['--sketch={{file_path}}', '--output={{file_path}}-build', '--run', '--force']
+        arguments: ['--sketch={{file_path}}', '--output={{file_path}}/build', '--run', '--force']
     }
 ]

@@ -112,6 +112,11 @@ module.exports = Fusion =
         atom.menu.update()
 
         currentBuild = child_process.spawn filledCommand, filledArgs, {cwd: filePath}
+        currentBuild.on 'exit', (code) ->
+            Fusion.menu.cancel.enabled = false
+            atom.menu.update()
+            currentBuild = null
+            atom.notifications.addSuccess('Build Finished', {detail: 'Finished with code ' + code})
         currentBuild.on 'close', (code) ->
             Fusion.menu.cancel.enabled = false
             atom.menu.update()
@@ -265,7 +270,8 @@ module.exports = Fusion =
 
     cancelBuild: ->
         if currentBuild
-            currentBuild.kill()
+            # TODO kill doesn't seem to actually stop the process
+            currentBuild.kill('SIGHUP')
             Fusion.menu.cancel.enabled = false
             atom.menu.update()
             atom.notifications.addInfo('Build Cancelled')
