@@ -1,0 +1,20 @@
+name: 'C# (Mono)'
+extensions: [
+    '.cs'
+]
+commandSequence: [
+    {
+        command: 'dmcs'
+        arguments: ['{{file}}']
+    }
+]
+variants: {
+    run: {
+        commandSequence: [
+            {
+                command: 'mono {{file_base_name}}.exe'
+                arguments: []
+            }
+        ]
+    }
+}

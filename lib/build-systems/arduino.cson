@@ -4,7 +4,7 @@ extensions: [
 ]
 commandSequence: [
     {
-        command: 'arduino'
+        command: 'ino'
         arguments: ['-build', '{{file}}']
     }
 ]
@@ -13,7 +13,7 @@ variants: [
         name: 'Upload'
         commandSequence: [
             {
-                command: 'arduino'
+                command: 'ino'
                 arguments: ['-upload', '{{file_base_name}}']
             }
         ]
